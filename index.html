@@ -6,11 +6,11 @@
 <title>Karta Anonimowego Alkoholika</title>
 <link rel="manifest" href="manifest.json">
 <style>
-body{font-family:Arial, sans-serif;background:#fff;margin:0;padding:20px;text-align:center;}
-.card{width:360px;margin:20px auto;background:white;border-radius:18px;box-shadow:0 10px 20px rgba(0,0,0,0.3);padding:12px;color:black;display:none;}
+body{font-family:Arial,sans-serif;background:#fff;margin:0;padding:20px;text-align:center;}
+.card{width:360px;margin:20px auto;background:white;border-radius:18px;box-shadow:0 10px 20px rgba(0,0,0,0.3);padding:20px;color:black;display:none;}
 .top{display:flex;}
 .leftColumn{display:flex;flex-direction:column;align-items:center;margin-right:10px;}
-.leftColumn img{width:100px;height:120px;object-fit:cover;border-radius:10px;border:2px solid #000;}
+.leftColumn img{width:120px;height:150px;object-fit:cover;border-radius:10px;border:2px solid #000;}
 .flag{width:100px;height:60px;margin-top:8px;background:linear-gradient(to bottom, white 50%, red 50%);border:1px solid #000;border-radius:5px;}
 .data{text-align:left;flex:1;}
 .value{font-weight:bold;margin-bottom:2px;}
@@ -31,7 +31,7 @@ button{flex:1;padding:8px;border:none;border-radius:10px;background:#333;color:w
 <input type="text" id="photoURL" placeholder="Link do zdjęcia (do linku)"><br>
 
 <input type="text" id="name" placeholder="Imię / pseudonim"><br>
-<input type="number" id="age" placeholder="Wiek"><br>
+<input type="date" id="dob" placeholder="Data urodzenia"><br>
 <input type="text" id="city" placeholder="Miasto"><br>
 <input type="text" id="coupon" placeholder="Kod kuponu"><br>
 <input type="number" id="shots" placeholder="Ilość wypitych małpek"><br>
@@ -51,7 +51,7 @@ button{flex:1;padding:8px;border:none;border-radius:10px;background:#333;color:w
 </div>
 <div class="data">
 <div class="value" id="cardName"></div><div class="label">Imię / pseudonim</div>
-<div class="value" id="cardAge"></div><div class="label">Wiek</div>
+<div class="value" id="cardDOB"></div><div class="label">Data urodzenia</div>
 <div class="value" id="cardCity"></div><div class="label">Miasto</div>
 <div class="value" id="cardCoupon"></div><div class="label">Kupon na darmową małpkę</div>
 </div>
@@ -89,7 +89,7 @@ reader.readAsDataURL(file);
 
 function randomData(){
 q('name').value=["Sebix","Mati","Dawcio","Kozak","Bywalec"][Math.floor(Math.random()*5)];
-q('age').value=Math.floor(Math.random()*20)+18;
+q('dob').value="1995-0"+Math.floor(Math.random()*9+1)+"-"+Math.floor(Math.random()*28+1);
 q('city').value=["Warszawa","Kraków","Gdańsk","Łódź","Poznań"][Math.floor(Math.random()*5)];
 q('coupon').value="MENL-"+Math.floor(Math.random()*99999);
 q('shots').value=Math.floor(Math.random()*10);
@@ -101,7 +101,7 @@ function buildData(){
 return {
 photo:q('photoURL').value,
 name:q('name').value,
-age:q('age').value,
+dob:q('dob').value,
 city:q('city').value,
 coupon:q('coupon').value,
 shots:Number(q('shots').value),
@@ -118,7 +118,7 @@ q('card').style.display="block";
 
 q('cardPhoto').src = previewPhoto || currentData.photo || "";
 q('cardName').innerText=currentData.name;
-q('cardAge').innerText=currentData.age;
+q('cardDOB').innerText=currentData.dob;
 q('cardCity').innerText=currentData.city;
 q('cardCoupon').innerText=currentData.coupon;
 
@@ -176,7 +176,7 @@ q('generator').style.display="none";
 q('card').style.display="block";
 q('cardPhoto').src = currentData.photo || "";
 q('cardName').innerText=currentData.name;
-q('cardAge').innerText=currentData.age;
+q('cardDOB').innerText=currentData.dob;
 q('cardCity').innerText=currentData.city;
 q('cardCoupon').innerText=currentData.coupon;
 updateMoreData();
