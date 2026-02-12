@@ -1,0 +1,22 @@
+{
+  "name": "Karta Anonimowego Alkoholika",
+  "short_name": "AnonAlko",
+  "description": "Generator kart Anonimowego Alkoholika z alkomatem i kuponem na małpkę.",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#f4d35e",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

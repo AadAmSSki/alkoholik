@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Karta Anonimowego Alkoholika</title>
+<link rel="manifest" href="manifest.json">
+<style>
+body{font-family:Arial, sans-serif;background:#ffffff;text-align:center;margin:0;padding:20px;}
+.card{width:360px;margin:20px auto;background:#fefefe;border-radius:18px;box-shadow:0 10px 20px rgba(0,0,0,0.3);padding:12px;color:black;}
+.top{display:flex;}
+.leftColumn{display:flex;flex-direction:column;align-items:center;margin-right:10px;}
+.leftColumn img{width:100px;height:120px;object-fit:cover;border-radius:10px;border:2px solid #000;}
+.flag{width:100px;height:60px;margin-top:8px;background:linear-gradient(to bottom, white 50%, red 50%);border:1px solid #000;border-radius:5px;}
+.data{text-align:left;flex:1;}
+.value{font-weight:bold;margin-bottom:2px;}
+.label{font-size:12px;margin-bottom:6px;}
+.buttons{display:flex;gap:6px;margin-top:10px;}
+button{flex:1;padding:8px;border:none;border-radius:10px;background:#333;color:white;font-weight:bold;cursor:pointer;}
+#moreData,#alkomatBox{display:none;background:white;padding:8px;border-radius:8px;margin-top:8px;max-height:140px;overflow:auto;}
+.bottomBar{margin-top:10px;background:black;color:limegreen;padding:7px;border-radius:0 0 18px 18px;font-weight:bold;}
+#generator input{margin:4px;padding:6px;width:90%;}
+</style>
+</head>
+<body>
+
+<h2 style="color:black;">KARTA ANONIMOWEGO ALKOHOLIKA</h2>
+
+<div id="generator">
+<input type="file" id="photoFile"><br>
+<input type="text" id="photoURL" placeholder="Link do zdjęcia (do linku)"><br>
+
+<input type="text" id="name" placeholder="Imię i nazwisko / pseudonim"><br>
+<input type="text" id="age" placeholder="Wiek"><br>
+<input type="text" id="city" placeholder="Miasto"><br>
+<input type="text" id="coupon" placeholder="Kupon na małpkę"><br>
+<input type="number" id="shots" placeholder="Ilość wypitych małpek"><br>
+<input type="text" id="drunkNumber" placeholder="Numer menela"><br>
+<input type="text" id="rent" placeholder="Renta (np. 1000zł)"><br>
+
+<button onclick="randomData()">Losowe dane</button>
+<button onclick="generate()">Generuj kartę</button>
+<button onclick="copyLink()">Kopiuj link karty</button>
+</div>
+
+<div id="card" class="card" style="display:none;">
+<div class="top">
+<div class="leftColumn">
+<img id="cardPhoto">
+<div class="flag"></div> <!-- flaga Polski -->
+</div>
+<div class="data">
+<div class="value" id="cardName"></div><div class="label">Imię / pseudonim</div>
+<div class="value" id="cardAge"></div><div class="label">Wiek</div>
+<div class="value" id="cardCity"></div><div class="label">Miasto</div>
+<div class="value" id="cardShots"></div><div class="label">Ilość wypitych małpek</div>
+<div class="value" id="cardDrunkNumber"></div><div class="label">Numer menela</div>
+<div class="value" id="cardCoupon"></div><div class="label">Kupon na małpkę</div>
+</div>
+</div>
+
+<div class="buttons">
+<button onclick="toggleMore()">Więcej danych</button>
+<button onclick="drinkShot()">Zajeb małpkę</button>
+<button onclick="toggleAlkomat()">Alkomat</button>
+</div>
+
+<div id="moreData"></div>
+<div id="alkomatBox">
+<h3>🍺 Alkomat</h3>
+<p><strong id="promile">0.00</strong> ‰</p>
+<p>Renta: <span id="moreRent"></span></p>
+<p class="warning">Poziom twojego alko we krwi drastycznie zmniejsza zdolność myślenia!!!</p>
+</div>
+
+<div class="bottomBar">✅ Dokument aktywny</div>
+</div>
+
+<script>
+function q(id){return document.getElementById(id);}
+let previewPhoto="";
+let promile=0;
+
+q('photoFile').addEventListener('change',function(){
+const file=this.files[0];
+if(file){
+const reader=new FileReader();
+reader.onload=e=>previewPhoto=e.target.result;
+reader.readAsDataURL(file);
+}
+});
+
+function randomData(){
+q('name').value=["Sebix","Mati","Dawcio","Kozak","Bywalec"][Math.floor(Math.random()*5)];
+q('age').value=Math.floor(Math.random()*20)+18;
+q('city').value=["Warszawa","Kraków","Gdańsk","Łódź","Poznań"][Math.floor(Math.random()*5)];
+q('coupon').value="MENL-"+Math.floor(Math.random()*99999);
+q('shots').value=Math.floor(Math.random()*10);
+q('drunkNumber').value=Math.floor(Math.random()*999999);
+q('rent').value=Math.floor(Math.random()*5000)+"zł";
+}
+
+function buildData(){
+return {
+photo:q('photoURL').value,
+name:q('name').value,
+age:q('age').value,
+city:q('city').value,
+coupon:q('coupon').value,
+shots:Number(q('shots').value),
+drunkNumber:q('drunkNumber').value,
+rent:q('rent').value
+};
+}
+
+function generate(){ 
+window.currentData = buildData();
+showCard(window.currentData); 
+}
+
+function showCard(d){
+q('generator').style.display="none";
+q('card').style.display="block";
+
+q('cardPhoto').src = previewPhoto || d.photo || "";
+q('cardName').innerText=d.name;
+q('cardAge').innerText=d.age;
+q('cardCity').innerText=d.city;
+q('cardShots').innerText=d.shots;
+q('cardDrunkNumber').innerText=d.drunkNumber;
+q('cardCoupon').innerText=d.coupon;
+
+promile = d.shots*0.7;
+q('promile').innerText=promile.toFixed(2);
+q('moreRent').innerText=d.rent;
+
+updateMoreData();
+
+window.currentData=d;
+}
+
+function updateMoreData(){
+q('moreData').innerHTML = "Poziom twojego alko we krwi drastycznie zmniejsza zdolność myślenia!!!<br>Renta: "+window.currentData.rent;
+}
+
+function toggleMore(){
+q('moreData').style.display=q('moreData').style.display==="none"?"block":"none";
+}
+
+function toggleAlkomat(){
+q('alkomatBox').style.display=q('alkomatBox').style.display==="none"?"block":"none";
+}
+
+function drinkShot(){
+promile+=0.70;
+q('promile').innerText=promile.toFixed(2);
+q('cardShots').innerText=Number(q('cardShots').innerText)+1;
+window.currentData.shots=Number(q('cardShots').innerText);
+updateURL();
+}
+
+function copyLink(){
+const d=window.currentData;
+const encoded=btoa(unescape(encodeURIComponent(JSON.stringify(d))));
+const url=location.origin+location.pathname+"?d="+encoded;
+navigator.clipboard.writeText(url);
+alert("Link karty skopiowany!");
+}
+
+function updateURL(){
+const d=window.currentData;
+const encoded=btoa(unescape(encodeURIComponent(JSON.stringify(d))));
+history.replaceState(null,"","?d="+encoded);
+}
+
+window.onload=function(){
+const p=new URLSearchParams(location.search).get("d");
+if(p){showCard(JSON.parse(decodeURIComponent(escape(atob(p)))));}
+}
+</script>
+
+</body>
+</html>
